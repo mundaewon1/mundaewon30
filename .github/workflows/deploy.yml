@@ -1,0 +1,200 @@
+name: Deploy Fullstack App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Check gradle wrapper
+        run: |
+          chmod +x moit-v3/back/gradlew
+          ls -la moit-v3/back/gradle/wrapper/
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+        working-directory: moit-v3/back
+
+      - name: Build Spring Boot App
+        run: ./gradlew clean build -x test
+        working-directory: moit-v3/back
+
+      - name: Debug Backend Files
+        run: |
+          echo "=== moit-v3/back 디렉터리 ==="
+          ls -al moit-v3/back
+          echo "=== build/libs 디렉터리 ==="
+          ls -al moit-v3/back/build/libs
+
+      - name: Ensure JAR exists
+        run: |
+          if [ ! -f "moit-v3/back/build/libs/back-0.0.1-SNAPSHOT.jar" ]; then
+            echo "JAR 파일이 없습니다."
+            exit 1
+          fi
+
+      - name: Create Backend .env from Secrets
+        run: |
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> moit-v3/back/.env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> moit-v3/back/.env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> moit-v3/back/.env
+          echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> moit-v3/back/.env
+          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> moit-v3/back/.env
+          echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> moit-v3/back/.env
+          echo "NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}" >> moit-v3/back/.env
+          echo "NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}" >> moit-v3/back/.env
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> moit-v3/back/.env
+          echo "KMA_API_KEY=${{ secrets.KMA_API_KEY }}" >> moit-v3/back/.env
+          echo "VWORLD_API_KEY=${{ secrets.VWORLD_API_KEY }}" >> moit-v3/back/.env
+          echo "NAVER_HOST=${{ secrets.NAVER_HOST }}" >> moit-v3/back/.env
+          echo "NAVER_USER=${{ secrets.NAVER_USER }}" >> moit-v3/back/.env
+          echo "NAVER_PASSWORD=${{ secrets.NAVER_PASSWORD }}" >> moit-v3/back/.env
+          echo "MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}" >> moit-v3/back/.env
+          echo "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> moit-v3/back/.env
+          echo "TOSS_SECRET_KEY=${{ secrets.TOSS_SECRET_KEY }}" >> moit-v3/back/.env
+          echo "SOLAPI_API_KEY=${{ secrets.SOLAPI_API_KEY }}" >> moit-v3/back/.env
+          echo "SOLAPI_API_SECRET=${{ secrets.SOLAPI_API_SECRET }}" >> moit-v3/back/.env
+          echo "SOLAPI_SENDER=${{ secrets.SOLAPI_SENDER }}" >> moit-v3/back/.env
+          echo "ADMIN_ID=${{ secrets.ADMIN_ID }}" >> moit-v3/back/.env
+          echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> moit-v3/back/.env
+          echo "ADMIN_NICKNAME=${{ secrets.ADMIN_NICKNAME }}" >> moit-v3/back/.env
+          echo "ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}" >> moit-v3/back/.env
+          echo "ADMIN_MOBILE=${{ secrets.ADMIN_MOBILE }}" >> moit-v3/back/.env
+
+      - name: Create deployment directories
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            mkdir -p /home/ubuntu/app/back/build/libs/uploads
+
+      - name: Copy JAR
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "moit-v3/back/build/libs/back-0.0.1-SNAPSHOT.jar"
+          target: "/home/ubuntu/app/back/build/libs"
+
+      - name: Copy Backend .env
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "moit-v3/back/.env"
+          target: "/home/ubuntu/app/back/build/libs"
+
+      - name: Check Oracle and Redis
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            for i in {1..30}; do
+              if nc -z localhost 1521 && nc -z localhost 6379; then
+                echo "Oracle / Redis 준비 완료"
+                break
+              fi
+              echo "DB/Redis 대기 중... ($i/30)"
+              sleep 2
+            done
+
+      - name: Start Backend
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/app/back/build/libs
+            pm2 delete backend || true
+            pm2 start java --name backend -- -jar back-0.0.1-SNAPSHOT.jar
+            pm2 save
+
+  frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Create frontend .env.production
+        run: |
+          echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}" > moit-v3/front/.env.production
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: moit-v3/front
+
+      - name: Build Next.js App
+        run: npm run build -- --no-lint
+        working-directory: moit-v3/front
+
+      - name: Debug Frontend Files
+        run: |
+          echo "=== front 디렉터리 ==="
+          ls -al moit-v3/front
+          echo "=== .next 디렉터리 ==="
+          ls -al moit-v3/front/.next
+
+      - name: Create frontend archive
+        run: |
+          cd moit-v3/front
+          tar -czf ../../frontend-build.tar.gz .next public package.json package-lock.json .env.production
+
+      - name: Create frontend directory
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            mkdir -p /home/ubuntu/app/front
+
+      - name: Copy frontend archive
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "frontend-build.tar.gz"
+          target: "/home/ubuntu/app/front"
+
+      - name: Start Frontend
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/app/front
+            rm -rf .next public
+            tar -xzf frontend-build.tar.gz
+            rm -f frontend-build.tar.gz
+            npm install --production
+            pm2 delete frontend || true
+            pm2 start npm --name frontend -- run start
+            pm2 save
