@@ -146,7 +146,7 @@ jobs:
           echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}" > moit-v3/front/.env.production
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
         working-directory: moit-v3/front
 
       - name: Build Next.js App
