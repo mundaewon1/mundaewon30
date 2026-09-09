@@ -91,6 +91,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "moit-v3/back/build/libs/back-0.0.1-SNAPSHOT.jar"
           target: "/home/ubuntu/app/back/build/libs"
+          strip_components: 4
 
       - name: Copy Backend .env
         uses: appleboy/scp-action@v0.1.7
@@ -100,6 +101,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "moit-v3/back/.env"
           target: "/home/ubuntu/app/back/build/libs"
+          strip_components: 2
 
       - name: Check Oracle and Redis
         uses: appleboy/ssh-action@v1.0.3
