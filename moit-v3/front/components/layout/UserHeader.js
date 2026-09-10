@@ -632,7 +632,7 @@ function UserHeader() {
 
 
           {/* 관리자 문의 */}
-          <Link href="/user/qna/write?type=ADMIN">
+          <Link href="/user/qna/questionWrite?type=ADMIN">
             <a>
               <MessageOutlined />
               &nbsp;관리자 1:1 문의
