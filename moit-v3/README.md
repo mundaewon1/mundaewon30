@@ -89,15 +89,15 @@ MOIT(모잇)은 스터디, 프로젝트, 운동, 취미 활동 등 **공통의 �
 
 | 문의 등록 | 문의 조회 | 문의 수정 |
 | :---: | :---: | :---: |
-| <img src="./img/qna-write.png" width="250"> | <img src="./img/qna-detail.png" width="250"> | <img src="./img/qna-edit.png" width="250"> |
+| <img src="./img/qna-write.png" width="230"> | <img src="./img/qna-detail.png" width="230"> | <img src="./img/qna-edit.png" width="230"> |
 
 | 문의 삭제 | 관리자 답변 | Swagger API 테스트 |
 | :---: | :---: | :---: |
-| <img src="./img/qna-delete.png" width="250"> | <img src="./img/qna-answer.png" width="250"> | <img src="./img/qna-swagger.png" width="250"> |
+| <img src="./img/qna-delete.png" width="230"> | <img src="./img/qna-answer.png" width="230"> | <img src="./img/qna-swagger.png" width="230"> |
 
 | AI 문의 자동 분류 | 답변 알림 | 알림 상세 내용 |
 | :---: | :---: | :---: |
-| <img src="./img/qna-ai-classification.png" width="250"> | <img src="./img/qna-notification.png" width="250"> | <img src="./img/qna-notification-detail.png" width="250"> |
+| <img src="./img/qna-ai-classification.png" width="230"> | <img src="./img/qna-notification.png" width="230"> | <img src="./img/qna-notification-detail.png" width="230"> |
 
 ### 🚨 신고 & AI RAG 스펙 (Report & Risk Management)
 
