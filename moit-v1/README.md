@@ -71,11 +71,11 @@
 
 | 문의 등록 | 문의 조회 | 문의 수정 |
 | :---: | :---: | :---: |
-| <img src="./img/qna-write.png" width="230"> | <img src="./img/qna-detail.png" width="230"> | <img src="./img/qna-edit.png" width="230"> |
+| <img src="./img/qna-write.png" width="250"> | <img src="./img/qna-detail.png" width="250"> | <img src="./img/qna-edit.png" width="250"> |
 
 | 문의 삭제 | 답변 등록 | 문의 목록 페이지 |
 | :---: | :---: | :---: |
-| <img src="./img/qna-delete.png" width="230"> | <img src="./img/qna-answer.png" width="230"> | <img src="./img/qna-list.png" width="230"> |
+| <img src="./img/qna-delete.png" width="250"> | <img src="./img/qna-answer.png" width="250"> | <img src="./img/qna-list.png" width="250"> |
 
 ### 📝 후기 기능
 
