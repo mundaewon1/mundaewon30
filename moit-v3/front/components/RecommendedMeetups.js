@@ -2,7 +2,9 @@ import React from "react";
 import { Card, Space, Row, Col, Typography } from "antd";
 
 const { Text } = Typography;
-
+const API_BASE_URL =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
+    
 function RecommendedMeetups({ recommendedMeetups = [], onMeetupClick }) {
     return (
         <Card title="추천 모임" className="meetup-side-card">
@@ -22,8 +24,8 @@ function RecommendedMeetups({ recommendedMeetups = [], onMeetupClick }) {
                                     <img
                                         src={
                                             item.imagePath
-                                                ? `http://localhost:8080/upload/meetup/${item.imagePath}`
-                                                : "http://localhost:8080/upload/no-image.png"
+                                                ? `${API_BASE_URL}/upload/meetup/${item.imagePath}`
+                                                : `${API_BASE_URL}/upload/no-image.png`
                                         }
                                         alt={item.title}
                                     />

@@ -14,7 +14,8 @@ import {LockOutlined,UserOutlined} from "@ant-design/icons";
 import {loginRequest} from "../../../reducers/userReducer";
 
 const { Title, Text } = Typography;
-
+const API_BASE_URL =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
 
 function Login(){
 
@@ -194,7 +195,7 @@ function Login(){
         localStorage.setItem("socialProvider", "KAKAO");
 
         window.location.href =
-            `http://localhost:8080/oauth2/authorization/kakao?deviceId=${encodeURIComponent(deviceId)}`;
+            `${API_BASE_URL}/oauth2/authorization/kakao?deviceId=${encodeURIComponent(deviceId)}`;
     };
 
 
@@ -207,7 +208,7 @@ function Login(){
         localStorage.setItem("socialProvider", "NAVER");
 
         window.location.href =
-            `http://localhost:8080/oauth2/authorization/naver?deviceId=${encodeURIComponent(deviceId)}`;
+            `${API_BASE_URL}/oauth2/authorization/naver?deviceId=${encodeURIComponent(deviceId)}`;
     };
 
 
@@ -220,7 +221,7 @@ function Login(){
         localStorage.setItem("socialProvider", "GOOGLE");
 
         window.location.href =
-            `http://localhost:8080/oauth2/authorization/google?deviceId=${encodeURIComponent(deviceId)}`;
+            `${API_BASE_URL}/oauth2/authorization/google?deviceId=${encodeURIComponent(deviceId)}`;
     }; 
 
     ///////////////////////////////

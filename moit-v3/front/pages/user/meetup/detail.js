@@ -31,6 +31,8 @@ import {
 import api from "../../../api/axios";
 
 const { Title } = Typography;
+const API_BASE_URL =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
 
 function MeetupDetailPage() {
     const router = useRouter();
@@ -234,10 +236,10 @@ function MeetupDetailPage() {
     const images =
         meetup?.imagePaths?.length > 0
             ? meetup.imagePaths.map(
-                  (imagePath) =>
-                      `http://localhost:8080/upload/meetup/${imagePath}`,
-              )
-            : ["http://localhost:8080/upload/no-image.png"];
+                (imagePath) =>
+                    `${API_BASE_URL}/upload/meetup/${imagePath}`,
+            )
+            : [`${API_BASE_URL}/upload/no-image.png`];
 
     const rawReviews =
         reduxReviews?.map((review) => ({

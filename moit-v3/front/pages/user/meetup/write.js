@@ -38,7 +38,9 @@ import { searchAddressRequest } from "../../../reducers/commonReducer";
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
-
+const API_BASE_URL =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
+    
 function write() {
     const dispatch = useDispatch();
     const router = useRouter();
@@ -91,7 +93,7 @@ function write() {
                     uid: `existing-${index}`,
                     name: imagePath,
                     status: "done",
-                    url: `http://localhost:8080/upload/meetup/${imagePath}`,
+                    url: `${API_BASE_URL}/upload/meetup/${imagePath}`,
                 }),
             );
 
