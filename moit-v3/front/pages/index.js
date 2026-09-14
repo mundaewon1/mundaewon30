@@ -46,7 +46,7 @@ export default function Home() {
             return;
         }
         dispatch(meetupLikeRequest(meetupId));
-    };
+    }; 
 
     return (
         <div className="main-page">
