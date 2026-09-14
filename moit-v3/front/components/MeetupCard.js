@@ -1,5 +1,7 @@
 import React from "react";
 import { Card, Space, Tag, Button } from "antd";
+const API_BASE_URL =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
 
 function MeetupCard({ meetup, onClick, onToggleLike }) {
     const isRecruiting = meetup.meetupStatus === "RECRUITING";
