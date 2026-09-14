@@ -131,7 +131,18 @@ jobs:
             pm2 start java --name backend -- -jar back-0.0.1-SNAPSHOT.jar --spring.config.additional-location=file:/home/ubuntu/app/back/build/libs/application-oauth.yml
             pm2 save
 
+            echo "Spring Boot 기동 대기..."
+            for i in {1..30}; do
+              if curl -s -o /dev/null http://localhost:8080; then
+                echo "Backend 준비 완료"
+                break
+              fi
+              echo "Backend 대기 중... ($i/30)"
+              sleep 2
+            done
+
   frontend:
+    needs: backend
     runs-on: ubuntu-latest
 
     steps:
