@@ -30,203 +30,334 @@ import lombok.RequiredArgsConstructor;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-	private final Oauth2UserService oauthUserService;
-	private final SocialLoginSuccessHandler socialLoginSuccessHandler;
-	private final CustomLoginFailureHandler customLoginFailureHandler;
-	private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
+    private final Oauth2UserService oauthUserService;
+    private final SocialLoginSuccessHandler socialLoginSuccessHandler;
+    private final CustomLoginFailureHandler customLoginFailureHandler;
+    private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
-	// JWT
-	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    // JWT
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-	// =========================================================
-	// Security Filter Chain
-	// =========================================================
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    // =========================================================
+    // Security Filter Chain
+    // =========================================================
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-		// =====================================================
-		// 1. CORS
-		// =====================================================
-		http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+        // =====================================================
+        // 1. CORS
+        // =====================================================
+        http.cors(cors ->
+            cors.configurationSource(corsConfigurationSource())
+        );
 
-		// =====================================================
-		// 2. CSRF
-		// =====================================================
-		http.csrf(csrf -> csrf.ignoringRequestMatchers("/user/member/join", "/user/member/update",
-				"/user/member/delete", "/questions/deleteSelected", "/api/meetups/**", "/api/members/**",
-				"/api/questions/**", "/api/notifications/**", "/api/reports/**", "/api/reports",
-				"/api/admin/advertisement/**", "/api/advertisement/**", "/api/reviews/**", "/api/admin/**",
-				"/api/payment/**", "/user/advertisement/aiAdvertise", "/api/common/**"
+        // =====================================================
+        // 2. CSRF
+        // =====================================================
+        http.csrf(csrf -> csrf
+            .ignoringRequestMatchers(
+                "/user/member/join",
+                "/user/member/update",
+                "/user/member/delete",
+                "/questions/deleteSelected",
+                "/api/meetups/**",
+                "/api/members/**",
+                "/api/questions/**",
+                "/api/notifications/**",
+                "/api/reports/**",
+                "/api/reports",
+                "/api/admin/advertisement/**",
+                "/api/advertisement/**",
+                "/api/reviews/**",
+                "/api/admin/**",
+                "/api/payment/**",
+                "/user/advertisement/aiAdvertise",
+                "/api/common/**"              
 
-		));
+            )
+        );
 
-		// =====================================================
-		// 3. JWT 인증 필터
-		// =====================================================
-		http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        // =====================================================
+        // 3. JWT 인증 필터
+        // =====================================================
+        http.addFilterBefore(
+            jwtAuthenticationFilter,
+            UsernamePasswordAuthenticationFilter.class
+        );
 
-		// =====================================================
-		// 4. 접근 권한
-		// =====================================================
-		http.authorizeHttpRequests(auth -> auth
+        // =====================================================
+        // 4. 접근 권한
+        // =====================================================
+        http.authorizeHttpRequests(auth -> auth
 
-				// -------------------------------------------------
-				// CORS Preflight
-				// -------------------------------------------------
-				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            // -------------------------------------------------
+            // CORS Preflight
+            // -------------------------------------------------
+            .requestMatchers(HttpMethod.OPTIONS, "/**")
+            .permitAll()
 
-				// -------------------------------------------------
-				// API 공개 영역
-				// -------------------------------------------------
-				.requestMatchers("/api/members/signup", "/api/members/login", "/api/members/check-loginId",
-						"/api/members/check-email", "/api/members/check-nickname", "/api/members/phone/send",
-						"/api/members/phone/verify", "/api/members/refresh", "/api/members/email/send",
-						"/api/members/email/verify", "/api/members/check-password", "/api/members/social-info",
-						"/api/members/find-id", "/api/members/reset-password", "/api/members/signup/behavior/analyze")
-				.permitAll()
+            // -------------------------------------------------
+            // API 공개 영역
+            // -------------------------------------------------
+            .requestMatchers(
+                "/api/members/signup",
+                "/api/members/login",
+                "/api/members/check-loginId",
+                "/api/members/check-email",
+                "/api/members/check-nickname",
+                "/api/members/phone/send",
+                "/api/members/phone/verify",
+                "/api/members/refresh",
+                "/api/members/email/send",
+                "/api/members/email/verify",
+                "/api/members/check-password",
+                "/api/members/social-info",
+                "/api/members/find-id",
+                "/api/members/reset-password",
+                "/api/members/signup/behavior/analyze"
+            ).permitAll()
 
-				// -------------------------------------------------
-				// 일반 페이지 공개 영역
-				// -------------------------------------------------
-				.requestMatchers("/user/member/join", "/user/member/login", "/user/checkLoginId", "/user/checkNickname",
-						"/user/member/checkPassword", "/admin/member/join", "/meetup/list", "/user/advertisement/click",
-						"/user/member/kakaologout", "/upload/**", "/images/**",
+            // -------------------------------------------------
+            // 일반 페이지 공개 영역
+            // -------------------------------------------------
+            .requestMatchers(
+                "/user/member/join",
+                "/user/member/login",
+                "/user/checkLoginId",
+                "/user/checkNickname",
+                "/user/member/checkPassword",
+                "/admin/member/join",
+                "/meetup/list",
+                "/user/advertisement/click",
+                "/user/member/kakaologout",
+                "/upload/**",
+                "/images/**",
+                
+                //운영환경에서는 yml로 제어 
+                "/swagger-ui/**",
+                "/swagger-ui.html",
+                "/v3/api-docs/**"
 
-						// 운영환경에서는 yml로 제어
-						"/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**"
+            ).permitAll()
+            
+			// -------------------------------------------------
+			// 모집글 공개/비공개 변경 → 관리자만 20260830 bora추가
+			// -------------------------------------------------
+			.requestMatchers(
+			    HttpMethod.PATCH,
+			    "/api/meetups/*/visibility"
+			)
+			.hasAnyRole("ADMIN", "SUPERADMIN")
+			
+			// -------------------------------------------------
+			// 모집글 조회 → 공개 20260830 bora추가
+			// -------------------------------------------------
+			.requestMatchers(
+			    HttpMethod.GET,
+			    "/api/meetups/**"
+			)
+			.permitAll()
+			
+            // -------------------------------------------------
+            // 회원 API
+            // -------------------------------------------------
+            .requestMatchers(
+            		"/api/members/**",
+            		"/api/common/**"
+            )
+            .authenticated()
 
-				).permitAll()
+            // -------------------------------------------------
+            // 회원 페이지
+            // -------------------------------------------------
+            .requestMatchers(
+                "/user/member/mypage",
+                "/user/member/update",
+                "/user/member/delete",
+                "/user/advertisement/**",
+                "/meetup/write/**",
+                "/meetup/detail/**",
+                "/mypage/**",
+                "/api/questions/**"
+            ).authenticated()
 
-				// -------------------------------------------------
-				// 모집글 공개/비공개 변경 → 관리자만 20260830 bora추가
-				// -------------------------------------------------
-				.requestMatchers(HttpMethod.PATCH, "/api/meetups/*/visibility").hasAnyRole("ADMIN", "SUPERADMIN")
+            // -------------------------------------------------
+            // 제휴업체 광고
 
-				// -------------------------------------------------
-				// 모집글 조회 → 공개 20260830 bora추가
-				// -------------------------------------------------
-				.requestMatchers(HttpMethod.GET, "/api/meetups/**").permitAll()
+            // -------------------------------------------------
+            // 20260830 bora추가
+            .requestMatchers(
+                    "/api/advertisement/top",
+                    "/api/advertisement/click",
+                    "/api/advertisement/impression"
+                    
+            	)
+            .permitAll()
+            
+            // -------------------------------------------------    
+            .requestMatchers(
+            		"/api/advertisement/prices",
+            	    "/api/advertisement/*/extension-prices",
+            	    "/api/advertisement/**" 
+            )
+            .hasRole("PARTNER")
 
-				// -------------------------------------------------
-				// 회원 API
-				// -------------------------------------------------
-				.requestMatchers("/api/members/**", "/api/common/**").authenticated()
 
-				// -------------------------------------------------
-				// 회원 페이지
-				// -------------------------------------------------
-				.requestMatchers("/user/member/mypage", "/user/member/update", "/user/member/delete",
-						"/user/advertisement/**", "/meetup/write/**", "/meetup/detail/**", "/mypage/**",
-						"/api/questions/**")
-				.authenticated()
+            // -------------------------------------------------
+            // 관리자
+            // -------------------------------------------------
+             .requestMatchers("/api/admin/**", "/api/reports/admin/**")
+             .hasAnyRole("ADMIN", "SUPERADMIN")
 
-				// -------------------------------------------------
-				// 제휴업체 광고
 
-				// -------------------------------------------------
-				// 20260830 bora추가
-				.requestMatchers("/api/advertisement/top", "/api/advertisement/click", "/api/advertisement/impression")
-				.permitAll()
+            // -------------------------------------------------
+            // 나머지
+            // -------------------------------------------------
+            .anyRequest()
+            .authenticated() // 20260830 bora수정
+        );
 
-				// -------------------------------------------------
-				.requestMatchers("/api/advertisement/prices", "/api/advertisement/*/extension-prices",
-						"/api/advertisement/**")
-				.hasRole("PARTNER")
+        // =====================================================
+        // 5. Form Login
+        // =====================================================
+        http.formLogin(form -> form
+            .loginPage("/user/member/login")
+            .loginProcessingUrl("/login")
+            .defaultSuccessUrl("/user/main", false)
+            .failureHandler(customLoginFailureHandler)
+            .permitAll()
+            .authenticationDetailsSource(
+                new CustomAuthenticationDetailsSource()
+            )
+        );
 
-				// -------------------------------------------------
-				// 관리자
-				// -------------------------------------------------
-				.requestMatchers("/api/admin/**", "/api/reports/admin/**").hasAnyRole("ADMIN", "SUPERADMIN")
+        // =====================================================
+        // 6. Logout
+        // =====================================================
+        http.logout(logout -> logout
+            .logoutUrl("/user/member/logout")
+            .logoutSuccessHandler(customLogoutSuccessHandler)
+            .invalidateHttpSession(true)
+            .clearAuthentication(true)
+            .deleteCookies("JSESSIONID")
+            .permitAll()
+        );
 
-				// -------------------------------------------------
-				// 나머지
-				// -------------------------------------------------
-				.anyRequest().authenticated() // 20260830 bora수정
-		);
+        // =====================================================
+        // 7. OAuth2 Login
+        // =====================================================
+        http.oauth2Login(oauth2 -> oauth2
+            .loginPage("/user/member/login")
+            .successHandler(socialLoginSuccessHandler)
+            .userInfoEndpoint(userinfo ->
+                userinfo.userService(oauthUserService)
+            )
+        );
 
-		// =====================================================
-		// 5. Form Login
-		// =====================================================
-		http.formLogin(form -> form.loginPage("/user/member/login").loginProcessingUrl("/login")
-				.defaultSuccessUrl("/user/main", false).failureHandler(customLoginFailureHandler).permitAll()
-				.authenticationDetailsSource(new CustomAuthenticationDetailsSource()));
+        // =====================================================
+        // 8. API 인증 실패 처리
+        // =====================================================
+        http.exceptionHandling(exception -> exception
+            .defaultAuthenticationEntryPointFor(
+                (request, response, authException) -> {
 
-		// =====================================================
-		// 6. Logout
-		// =====================================================
-		http.logout(logout -> logout.logoutUrl("/user/member/logout").logoutSuccessHandler(customLogoutSuccessHandler)
-				.invalidateHttpSession(true).clearAuthentication(true).permitAll());
+                    response.sendError(
+                        HttpServletResponse.SC_UNAUTHORIZED,
+                        "JWT 인증이 필요합니다."
+                    );
+                },
+                request ->
+                    request.getRequestURI().startsWith("/api/")
+            )
+        );
+       
 
-		// =====================================================
-		// 7. OAuth2 Login
-		// =====================================================
-		http.oauth2Login(oauth2 -> oauth2.loginPage("/user/member/login").successHandler(socialLoginSuccessHandler)
-				.userInfoEndpoint(userinfo -> userinfo.userService(oauthUserService)));
+        return http.build();
+    }
 
-		// =====================================================
-		// 8. API 인증 실패 처리
-		// =====================================================
-		http.exceptionHandling(
-				exception -> exception.defaultAuthenticationEntryPointFor((request, response, authException) -> {
+    // =========================================================
+    // CORS 설정
+    // =========================================================
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
 
-					response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT 인증이 필요합니다.");
-				}, request -> request.getRequestURI().startsWith("/api/")));
+        CorsConfiguration configuration =
+            new CorsConfiguration();
 
-		return http.build();
-	}
+        // Next.js
+        configuration.setAllowedOrigins(
+            List.of("http://localhost:3000",
+            		"http://localhost:3001",
+                    "https://moit-v3.duckdns.org"
+            )
+        );
 
-	// =========================================================
-	// CORS 설정
-	// =========================================================
-	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
+        // 허용 HTTP Method
+        configuration.setAllowedMethods(
+            List.of(
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH",
+                "OPTIONS"
+            )
+        );
 
-		CorsConfiguration configuration = new CorsConfiguration();
+        // 허용 Header
+        configuration.setAllowedHeaders(
+            List.of(
+                "Authorization",
+                "Content-Type",
+                "Accept",
+                "X-Device-Id"
+            )
+        );
 
-		// Next.js
-		configuration.setAllowedOrigins(List.of("http://localhost:3000",
-		        								"https://moit-v3.duckdns.org"));
+        // Cookie / Credential 허용
+        configuration.setAllowCredentials(true);
 
-		// 허용 HTTP Method
-		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        UrlBasedCorsConfigurationSource source =
+            new UrlBasedCorsConfigurationSource();
 
-		// 허용 Header
-		configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "X-Device-Id"));
+        source.registerCorsConfiguration(
+            "/**",
+            configuration
+        );
 
-		// Cookie / Credential 허용
-		configuration.setAllowCredentials(true);
+        return source;
+    }
 
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    // =========================================================
+    // AuthenticationManager
+    // =========================================================
+    @Bean
+    public AuthenticationManager authenticationManager(
+        AuthenticationConfiguration config
+    ) throws Exception {
 
-		source.registerCorsConfiguration("/**", configuration);
+        return config.getAuthenticationManager();
+    }
 
-		return source;
-	}
+    // =========================================================
+    // Custom Authentication Details
+    // =========================================================
+    private static class CustomAuthenticationDetailsSource
+        implements org.springframework.security.authentication.AuthenticationDetailsSource<
+            HttpServletRequest,
+            WebAuthenticationDetails> {
 
-	// =========================================================
-	// AuthenticationManager
-	// =========================================================
-	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        @Override
+        public WebAuthenticationDetails buildDetails(
+            HttpServletRequest context
+        ) {
 
-		return config.getAuthenticationManager();
-	}
+            return new WebAuthenticationDetails(context) {
 
-	// =========================================================
-	// Custom Authentication Details
-	// =========================================================
-	private static class CustomAuthenticationDetailsSource implements
-			org.springframework.security.authentication.AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> {
-
-		@Override
-		public WebAuthenticationDetails buildDetails(HttpServletRequest context) {
-
-			return new WebAuthenticationDetails(context) {
-
-				public String getMemberTypeId() {
-					return context.getParameter("memberTypeId");
-				}
-			};
-		}
-	}
+                public String getMemberTypeId() {
+                    return context.getParameter("memberTypeId");
+                }
+            };
+        }
+    }
 }

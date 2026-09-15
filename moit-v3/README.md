@@ -73,31 +73,11 @@ MOIT(모잇)은 스터디, 프로젝트, 운동, 취미 활동 등 **공통의 �
 - **호스트 프로필/이력 노출:** 매너점수, 모임 개설 횟수, 완료율, 노쇼 이력 시각화
 - **기상 변동 SMS 알림:** CoolSMS API 연동 스케줄러로 비/우천 예보 시 참가자 자동 SMS 발송
 
-### 📝 후기 (Review)
+### 📝 후기 & 💬 문의 (Review & QnA)
 
 - **후기 고도화:** 다중 이미지 등록/수정/삭제/확대, 계층형 대댓글(1-Depth/2-Depth), 조회수, 모임 종료 후 3일 뒤 작성 권장 알림, 1인 1후기 중복 제한
-
-### 💬 문의 (QnA)
-
-- **CRUD 및 답변:** 문의 등록·조회·수정·삭제 및 관리자 답변 프로세스 구축
-- **상태 제어 & 비즈니스 로직:** 중복 문의 검증 및 답변 완료 건 수정 제한
-- **프론트-백엔드 연동:** React, Redux-Saga, Axios, MyBatis 기반 RESTful API 연동
-- **API 테스트:** Swagger를 활용한 Q&A API 테스트 및 검증
-- **AI 문의 자동 분류:** OpenAI API를 활용한 문의 유형 자동 분류 및 비속어 필터링
-- **답변 알림:** 답변 완료 시 사용자에게 알림 제공
-- **Q&A UX 개선:** Redux Loading State와 Ant Design을 활용한 연타 및 중복 등록 방지
-
-| 문의 등록 | 문의 조회 | 문의 수정 |
-| :---: | :---: | :---: |
-| <img src="./img/qna-write.png" width="230"> | <img src="./img/qna-detail.png" width="230"> | <img src="./img/qna-edit.png" width="230"> |
-
-| 문의 삭제 | 관리자 답변 | Swagger API 테스트 |
-| :---: | :---: | :---: |
-| <img src="./img/qna-delete.png" width="230"> | <img src="./img/qna-answer.png" width="230"> | <img src="./img/qna-swagger.png" width="230"> |
-
-| AI 문의 자동 분류 | 답변 알림 | 알림 상세 내용 |
-| :---: | :---: | :---: |
-| <img src="./img/qna-ai-classification.png" width="230"> | <img src="./img/qna-notification.png" width="230"> | <img src="./img/qna-notification-detail.png" width="230"> |
+- **AI 문의 자동 분류:** OpenAI LLM 기반 문의 내용 분석 ➔ 로그인/결제/계정/신고/버그/기타 자동 카테고리화
+- **QnA UX 개선:** 최신 10개 FIFO 알림 보관, 문의 답변 완료 후 만족도(1~5점) 평가, 답변 완료 문의 수정 제한, Redux Loading State + AntD 기반 연타/중복 등록 방지
 
 ### 🚨 신고 & AI RAG 스펙 (Report & Risk Management)
 
@@ -119,32 +99,6 @@ MOIT(모잇)은 스터디, 프로젝트, 운동, 취미 활동 등 **공통의 �
 - CTR 및 최근 노출 빈도를 반영한 가중치 보정
 - 특정 광고 과도 노출 시 가중치 차감, 신규/소외 광고 노출 기회 제공
 - 동일 Priority 그룹 내 Random 선택으로 공정한 노출 보장
-
----
-
-## 🔧 트러블슈팅
-
-### Q&A 중복 등록 방지
-
-#### 문제
-
-- 문의 등록 시 동일 문의의 중복 등록 및 연속 클릭으로 인해 중복 데이터가 발생할 수 있는 문제
-
-#### 해결
-
-- 기존 문의의 제목·내용을 DB에서 검증하고 Redux Loading State를 활용해 등록 버튼을 비활성화하여 중복 등록을 방지
-
-#### 결과
-
-- 중복 문의 등록을 방지하고 문의 데이터의 무결성 및 사용자 입력 안정성 확보
-
----
-
-## 💡 프로젝트 소감
-
-- 문의 상태와 권한에 따른 접근 제어 및 수정 제한을 구현하며 비즈니스 로직 설계 역량 강화
-- Redux와 REST API를 활용한 중복 요청 제어 및 데이터 처리 경험을 통해 프론트·백엔드 연동 이해도 향상
-- OpenAI API를 활용한 문의 자동분류와 첨부파일·만족도 기능을 구현하며 외부 API 및 데이터 처리 역량 강화
 
 ---
 
@@ -172,7 +126,7 @@ MOIT(모잇)은 스터디, 프로젝트, 운동, 취미 활동 등 **공통의 �
 
 ### DevOps & Tools
 
-- Git, GitHub (GitHub Flow), Notion, Postman
+- Git, GitHub (GitHub Flow), Notion, Google Sheets
 
 ---
 
@@ -180,7 +134,7 @@ MOIT(모잇)은 스터디, 프로젝트, 운동, 취미 활동 등 **공통의 �
 
 - 팀 프로젝트 진행
 - **GitHub Flow** 기반 코드 리뷰 및 브랜치 전략 준수
-- **Notion**을 활용한 WBS, API 명세서, 이슈 트래킹 관리
+- **Notion, Google Sheets**을 활용한 WBS, API 명세서, 이슈 트래킹 관리
 
 ---
 
@@ -188,9 +142,9 @@ MOIT(모잇)은 스터디, 프로젝트, 운동, 취미 활동 등 **공통의 �
 
 | 기능               | 시연 영상                                                       |
 | ------------------ | --------------------------------------------------------------- |
-| 회원가입 및 로그인 | [YouTube에서 보기](https://www.youtube.com/watch?v=qlZsblUcrpQ) |
-| 모임 등록 및 신청  | [YouTube에서 보기](https://youtu.be/W8uqEza0bNc)                |
-| 문의 등록          | [YouTube에서 보기](https://www.youtube.com/watch?v=PCCIJsmrKG8) |
-| 후기 등록          | [YouTube에서 보기](https://www.youtube.com/watch?v=pyTIHHSDAqs) |
-| 신고 등록          | [YouTube에서 보기](https://www.youtube.com/watch?v=QSb3lZ5VrFA) |
-| 광고               | [YouTube에서 보기](https://www.youtube.com/watch?v=NZkUY0mHTUU) |
+| 회원가입 및 로그인 | [YouTube에서 보기](https://www.youtube.com/watch?v=qLQ4DsPll1A) |
+| 모임 등록 및 신청  | [YouTube에서 보기](https://youtu.be/IGa7PsvydMg)                |
+| 문의 등록          | [YouTube에서 보기](https://www.youtube.com/watch?v=MbnXIlCf5fw) |
+| 후기 등록          | [YouTube에서 보기](https://www.youtube.com/watch?v=X1sHxoJ5mC0&feature=youtu.be) |
+| 신고 등록          | [YouTube에서 보기](https://www.youtube.com/watch?v=HBbAt6RWaLs) |
+| 광고               | [YouTube에서 보기](https://www.youtube.com/watch?v=lWMGXcXgQ-U) |

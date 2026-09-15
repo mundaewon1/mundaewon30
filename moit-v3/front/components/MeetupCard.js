@@ -1,10 +1,11 @@
 import React from "react";
 import { Card, Space, Tag, Button } from "antd";
-const API_BASE_URL =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
 
 function MeetupCard({ meetup, onClick, onToggleLike }) {
+    const API_BASE_URL =
+        process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
     const isRecruiting = meetup.meetupStatus === "RECRUITING";
+
     //console.log(meetup);
     return (
         <Card
@@ -15,9 +16,9 @@ function MeetupCard({ meetup, onClick, onToggleLike }) {
                 <div className="meetup-image">
                     <img
                         src={
-                                meetup.imagePath
-                                    ? `${API_BASE_URL}/upload/meetup/${meetup.imagePath}`
-                                    : `${API_BASE_URL}/upload/no-image.png`
+                            meetup.imagePath
+                                ? `${API_BASE_URL}/upload/meetup/${meetup.imagePath}`
+                                : `${API_BASE_URL}/upload/no-image.png`
                         }
                         alt={meetup.title}
                     />

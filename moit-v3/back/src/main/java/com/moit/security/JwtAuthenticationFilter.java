@@ -8,6 +8,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.moit.meetup.service.MeetupServiceImpl;
 import com.moit.member.dto.UserDto;
 import com.moit.member.service.LoginDeviceService;
 import com.moit.member.service.MemberService;
@@ -16,8 +17,10 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -109,7 +112,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             
             if (!deviceValid) {
 
-                filterChain.doFilter(request, response);
+            	// Refresh Token Cookie 삭제
+                jakarta.servlet.http.Cookie refreshCookie =
+                    new jakarta.servlet.http.Cookie("refreshToken", "");
+
+                refreshCookie.setHttpOnly(true);
+                refreshCookie.setPath("/");
+                refreshCookie.setMaxAge(0);
+
+                response.addCookie(refreshCookie);
+
+                // JSESSIONID 삭제
+                jakarta.servlet.http.Cookie sessionCookie =
+                    new jakarta.servlet.http.Cookie("JSESSIONID", "");
+
+                sessionCookie.setHttpOnly(true);
+                sessionCookie.setPath("/");
+                sessionCookie.setMaxAge(0);
+
+                response.addCookie(sessionCookie);
+
+                // 인증 실패
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
 
@@ -165,10 +189,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .setAuthentication(authentication);
 
             } else {
-
-                System.out.println(
-                    "회원 조회 실패"
-                );
+            	log.error("회원 조회 실패");
             }
         }
 

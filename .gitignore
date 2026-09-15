@@ -78,3 +78,5 @@ coverage/
 # AWS SSH 키 파일
 *.pem
 *.csv
+
+/test

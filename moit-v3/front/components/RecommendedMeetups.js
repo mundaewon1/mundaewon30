@@ -2,10 +2,10 @@ import React from "react";
 import { Card, Space, Row, Col, Typography } from "antd";
 
 const { Text } = Typography;
-const API_BASE_URL =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
-    
+
 function RecommendedMeetups({ recommendedMeetups = [], onMeetupClick }) {
+    const API_BASE_URL =
+        process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
     return (
         <Card title="추천 모임" className="meetup-side-card">
             <Space direction="vertical" style={{ width: "100%" }} size={12}>
