@@ -22,14 +22,13 @@ public class CustomLoginFailureHandler implements AuthenticationFailureHandler {
 		String message = exception.getMessage();
 
 		if("WAIT".equals(message)) {
-		    response.sendRedirect("/user/member/login?error=wait");
+			response.sendRedirect("https://moit-v3.duckdns.org/user/member/login?error=wait");
 		}
 		else if("TYPE".equals(message)) {
-		    response.sendRedirect("/user/member/login?error=type");
+			response.sendRedirect("https://moit-v3.duckdns.org/user/member/login?error=type");
 		}else{
-		    response.sendRedirect("/user/member/login?error=fail");
+			response.sendRedirect("https://moit-v3.duckdns.org/user/member/login?error=fail");
 		}
 		
 	}
-
 }
