@@ -1,4 +1,4 @@
-name: Deploy Fullstack App
+name: Deploy moit v3
 
 on:
   push:

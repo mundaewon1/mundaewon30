@@ -10,6 +10,6 @@ public class MemberController {
     @GetMapping("/user/member/kakaologout")
     public String kakaoLogout() {
 
-        return "redirect:http://localhost:3000/user/member/login";
+        return "redirect:http://moit-v3.duckdns.org/user/member/login";
     }
 }
