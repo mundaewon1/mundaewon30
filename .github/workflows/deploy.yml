@@ -212,6 +212,7 @@ jobs:
     # Frontend
     # ============================================================
     frontend:
+        needs: backend
         runs-on: ubuntu-latest
 
         steps:
