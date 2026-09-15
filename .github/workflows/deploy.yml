@@ -296,7 +296,7 @@ jobs:
 
                       echo "=== After extract ==="
                       ls -lah
-            # Frontend 실행
+            # Frontend 실행 
             - name: Run MOIT v3 Frontend
               uses: appleboy/ssh-action@v0.1.7
               with:
