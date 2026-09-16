@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mundaewon1/mundaewon30/main/moit-v3/img/moit-v3.png" width="1000" alt="MOIT v3">
+</p>
+
 # 🚀 MOIT (모잇)
 
 > **Meet + It = MOIT**
