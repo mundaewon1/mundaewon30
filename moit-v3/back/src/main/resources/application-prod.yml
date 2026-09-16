@@ -91,5 +91,7 @@ app:
   frontend-url: https://moit-v3.duckdns.org
   oauth2:
     redirect-url: https://moit-v3.duckdns.org/oauth2/callback
+    kakao-client-id: ${KAKAO_CLIENT_ID}
+    kakao-logout-redirect-url: https://moit-v3.duckdns.org/user/member/kakaologout
 # server:
 #     port: 8081
