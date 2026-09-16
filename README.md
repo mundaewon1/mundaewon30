@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mundaewon30/moit-v3/main/img/moit-v3.png" width="900">
+  <img src="https://raw.githubusercontent.com/mundaewon1/mundaewon30/main/moit-v3/img/moit-v3.png" width="900" alt="MOIT v3">
 </p>
 
 # 🚀 MOIT Project History
