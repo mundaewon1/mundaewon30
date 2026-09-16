@@ -5,7 +5,8 @@ on:
         branches:
             - main
         paths:
-            - "moit-v3/**"
+            - "back/**"
+            - "front/**"
             - ".github/workflows/deploy.yml"
 
 jobs:
