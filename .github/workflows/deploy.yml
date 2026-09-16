@@ -325,8 +325,6 @@ jobs:
                   script: |
                       cd /home/ubuntu/app/moit-v3/front
 
-                      npm install --production --legacy-peer-deps
-
                       pm2 delete moit-v3-frontend || true
 
                       PORT=3001 pm2 start npm --name "moit-v3-frontend" -- run start

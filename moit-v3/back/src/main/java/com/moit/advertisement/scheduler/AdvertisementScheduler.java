@@ -72,8 +72,8 @@ public class AdvertisementScheduler {
     }
     
     
-    // 3시간마다 통계 ai 요약 저장
-    @Scheduled(cron = "0 0 */3 * * *")
+    // 2시 하루 한번 통계 ai 요약 저장
+    @Scheduled(cron = "0 0 2 * * *")
     //@Scheduled(cron = "0 */1 * * * *")
 
     public void generateAiSummary() {
