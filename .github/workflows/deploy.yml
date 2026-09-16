@@ -5,8 +5,8 @@ on:
         branches:
             - main
         paths:
-            - "back/**"
-            - "front/**"
+            - "moit-v3/back/**"
+            - "moit-v3/front/**"
             - ".github/workflows/deploy.yml"
 
 jobs:
@@ -198,7 +198,7 @@ jobs:
                   script: |
                       cd /home/ubuntu/app/moit-v3/back
 
-                      pm2 delete moit-v3-backend || true
+                      pm2 restart moit-v3-backend || true
 
                       export $(cat .env | xargs)
 
@@ -326,6 +326,6 @@ jobs:
                   script: |
                       cd /home/ubuntu/app/moit-v3/front
 
-                      pm2 delete moit-v3-frontend || true
+                      pm2 restart moit-v3-frontend || true
 
                       PORT=3001 pm2 start npm --name "moit-v3-frontend" -- run start
