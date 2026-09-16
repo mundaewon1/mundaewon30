@@ -198,17 +198,19 @@ jobs:
                   script: |
                       cd /home/ubuntu/app/moit-v3/back
 
-                      pm2 restart moit-v3-backend || true
-
                       export $(cat .env | xargs)
 
-                      pm2 start java \
-                        --name "moit-v3-backend" \
-                        -- \
-                        -Dspring.profiles.active=prod \
-                        -Dserver.port=8081 \
-                        -jar \
-                        build/libs/app.jar
+                      if pm2 describe moit-v3-backend > /dev/null 2>&1; then
+                        pm2 restart moit-v3-backend --update-env
+                      else
+                        pm2 start java \
+                          --name "moit-v3-backend" \
+                          -- \
+                          -Dspring.profiles.active=prod \
+                          -Dserver.port=8081 \
+                          -jar \
+                          build/libs/app.jar
+                      fi
                         
                       echo "⏳ Waiting for backend..."
 
@@ -326,6 +328,8 @@ jobs:
                   script: |
                       cd /home/ubuntu/app/moit-v3/front
 
-                      pm2 restart moit-v3-frontend || true
-
-                      PORT=3001 pm2 start npm --name "moit-v3-frontend" -- run start
+                      if pm2 describe moit-v3-frontend > /dev/null 2>&1; then
+                        pm2 restart moit-v3-frontend
+                      else
+                        PORT=3001 pm2 start npm --name "moit-v3-frontend" -- run start
+                      fi
