@@ -89,5 +89,7 @@ springdoc:
         enabled: false
 app:
   frontend-url: https://moit-v3.duckdns.org
+  oauth2:
+    redirect-url: https://moit-v3.duckdns.org/oauth2/callback
 # server:
 #     port: 8081

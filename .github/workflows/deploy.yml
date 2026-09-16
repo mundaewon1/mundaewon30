@@ -208,6 +208,24 @@ jobs:
                         -Dserver.port=8081 \
                         -jar \
                         build/libs/app.jar
+                        
+                      echo "⏳ Waiting for backend..."
+
+                      for i in {1..30}; do
+                        code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8081/)
+
+                        if [ "$code" != "000" ]; then
+                          echo "✅ Backend is ready (HTTP $code)"
+                          exit 0
+                        fi
+
+                        echo "Backend not ready... retry $i/30"
+                        sleep 5
+                      done
+
+                      echo "❌ Backend failed to start"
+                      pm2 logs moit-v3-backend --lines 100 --nostream
+                      exit 1
     # ============================================================
     # Frontend
     # ============================================================
