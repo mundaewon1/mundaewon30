@@ -207,7 +207,7 @@ jobs:
                           --name "moit-v3-backend" \
                           -- \
                           -Dspring.profiles.active=prod \
-                          -Dserver.port=8081 \
+                          -Dserver.port=8080 \
                           -jar \
                           build/libs/app.jar
                       fi
@@ -215,7 +215,7 @@ jobs:
                       echo "⏳ Waiting for backend..."
 
                       for i in {1..30}; do
-                        code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8081/)
+                        code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/)
 
                         if [ "$code" != "000" ]; then
                           echo "✅ Backend is ready (HTTP $code)"
@@ -331,5 +331,5 @@ jobs:
                       if pm2 describe moit-v3-frontend > /dev/null 2>&1; then
                         pm2 restart moit-v3-frontend
                       else
-                        PORT=3001 pm2 start npm --name "moit-v3-frontend" -- run start
+                        PORT=3000 pm2 start npm --name "moit-v3-frontend" -- run start
                       fi

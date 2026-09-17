@@ -1,9 +1,7 @@
 package com.moit.advertisement.service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.time.Duration;
 
@@ -276,4 +274,5 @@ public int calculateTotalDays(
             1,
             (int) ((seconds + 86399) / 86400)
     );
+    }
 }
