@@ -32,7 +32,7 @@
 	            AND q.created_at <![CDATA[ < ]]> TO_DATE(#{endDate}, 'YYYY-MM-DD') + 1
 	        </if>
 	    </where>
-	    ORDER BY q.question_id DESC
+	    ORDER BY q.created_at DESC
 	    OFFSET #{start} ROWS
 	    FETCH NEXT #{end} ROWS ONLY
 	</select>
